@@ -5,5 +5,5 @@ import pandas as pd
 def lowercase(string):
     return str(string).lower()
 
-def execute(dataframe):
+def Lowercase(dataframe):
     return dataframe.map(lowercase)

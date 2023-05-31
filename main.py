@@ -1,8 +1,9 @@
-from get_data import get_data
+import get_data as gt
+import wordstonumbers as w2n
 
 
 def main():
-    X, y = get_data()  # saves data as features and labels
+    X, y = gt.get_all_data()  # saves data as features and labels
 
 
 

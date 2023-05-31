@@ -1,14 +1,14 @@
 Outline for project:
 
 - We need to preprocess the data. This includes:
-    - Removing uppercase letters
-    - Making spaces between special characters and words
+    - Removing uppercase letters (DONE)
+    - Making spaces between special characters and words (DONE)
     Idears:
     - Removing words that are not in the English dictionary
 
 - We need to create a dictionary of words and their frequencies. This includes:
     - Creating a dictionary of words and their frequencies (DONE)
-    - Making a dictionary for each preprocessing method
+    - Making a dictionary for each preprocessing method (POSSIBLE)
 
 - We need to make new usefull features. This includes:
     - Length of the text

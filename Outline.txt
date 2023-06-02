@@ -5,6 +5,7 @@ Outline for project:
     - Making spaces between special characters and words (DONE)
     Idears:
     - Removing words that are not in the English dictionary
+    - Replace words like f*ck or #dumbass with ASTERISK or HASHTAG (DONE)
 
 - We need to create a dictionary of words and their frequencies. This includes:
     - Creating a dictionary of words and their frequencies (DONE)

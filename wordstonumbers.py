@@ -10,9 +10,9 @@ def get_vocab(X):
     """
     :return: vocabulary dictionary of words and their corresponding indices
     """
-    senlist = X.values.tolist()[0:3000]
+    senlist = X.values.tolist()[0:5000]
     all_words = list(chain(*[i.lower().split() for i in senlist]))
-    n_words = 75000
+    n_words = 40000
     words, count = np.unique(all_words, return_counts=True)
     idxs = np.argsort(count)[-n_words:]
     vocab = ['<UNK>'] + list(words[idxs][::-1])

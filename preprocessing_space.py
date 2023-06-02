@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Define the special characters you want to add spaces before and after
-special_chars = r'([!@#$%^&*()_\-+=<>?.,:;\'"/\\])'
+special_chars = r'([“!@#$%^&*()_\-+=<>?.,:;\"/\\])'
 
 def preprocess_space(dataframe):
     """

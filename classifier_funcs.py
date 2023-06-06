@@ -151,12 +151,15 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
                 os.remove(f'RNN_Model/loss_saved_{name}.png')
 
 
+        model_best = load_model(f'RNN_Model/saved_model_{name}.h5')
+
+        
     if train == 'n' or train == '':
-        #name = input('\nName of the model: ')
-        model = load_model(f'RNN_Model/saved_model_{name}.h5')
+        name_in = input('\nName of the model: ')
+        model_best = load_model(f'RNN_Model/saved_model_{name_in}.h5')
 
     ############################################# Evaluate the model #############################################
 
     print('\nEvaluating the model...')
 
-    loss, accuracy, y_pre, y_pred, roc_auc = evaluate_model(model, X_val, y_val)
+    loss, accuracy, y_pre, y_pred, roc_auc = evaluate_model(model_best, X_val, y_val)

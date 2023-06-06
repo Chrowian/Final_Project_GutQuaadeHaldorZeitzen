@@ -1,5 +1,6 @@
 # Testing data preprocessing on the neural network
 #%%
+
 print("Importing libraries...")
 
 import numpy as np
@@ -13,7 +14,6 @@ import lowercasetext as lct
 from oldshiz.rnn_lstm_func import RNN_LSTM
 import classifier_funcs as cf
 import tokeniser as tok
-
 
 #%%
 print("Importing data...")
@@ -43,25 +43,17 @@ if input == 'n':
 # Tokenising the data
 print("Tokenising data...")
 
-df2 = tok.tokenize_dataframe(df, vocab_size=50000, max_length=300)
+df2 = tok.tokenize_dataframe(df, vocab_size=10000, max_length=100)
 data = df2['text']
 labels = df2['label'].values
 #%%
 data_np = np.array(data.tolist())
 
 #%%
-type_calssif = input("Which classifier do you want to use? (1: RNN-LSTM or 2: LightGBM GBDT): ")
 
-if type_calssif == '1':
-    print('Running RNN-LSTM...')
+print('Running RNN-LSTM...')
 
-    # Running RNN-LSTM
-    cf.RNN_LSTM(data_np, labels, epoch=20, max_features=50000, batchsize= 256*8)
-
-if type_calssif == '2':
-    print('Running LightGBM GBDT...')
-
-    # Running LightGBM GBDT
-    cf.LightGBM_GBDT(data_np, labels, epoch=20, max_features=50000, batchsize= 256*8)
+# Running RNN-LSTM
+cf.RNN_LSTM(data_np, labels, epoch=20, max_features=10000, batchsize= 256*8)
 # %
 # %%

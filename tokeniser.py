@@ -4,6 +4,8 @@ from typing import List
 from keras.preprocessing.text import Tokenizer
 from keras.utils import pad_sequences
 import pandas as pd
+from transformers import BertTokenizer
+import tensorflow as tf
 
 def tokenize_dataframe(df: pd.DataFrame, 
                        title_column: str = 'title', 
@@ -53,3 +55,43 @@ def tokenize_dataframe(df: pd.DataFrame,
     print('Found %s unique tokens.' % len(word_index))
 
     return df_tokenized
+
+
+def tokenize_transformer(df):
+    """
+    Tokenizes the text data in a DataFrame and converts it to a TensorFlow Dataset.
+
+    This function combines the 'title' and 'text' fields into a single string,
+    tokenizes this string, and creates a TensorFlow Dataset where each item is a tuple
+    containing the tokenized text and the corresponding label. The function uses the
+    'bert-base-uncased' tokenizer and does not remove punctuation from the text.
+
+    Parameters
+    ----------
+    df (pandas.DataFrame): The DataFrame containing the data. It should have three columns:
+                           'title', 'text', and 'label'.
+
+    Returns
+    ----------
+    tensorflow.data.Dataset: A TensorFlow Dataset where each item is a tuple containing the 
+                             tokenized text and the corresponding label.
+    """
+    # initialize the tokenizer
+    tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+
+    # concatenate the 'title' and 'text' columns
+    texts = df['title'].str.cat(df['text'], sep=' ')
+    
+    # tokenize the texts
+    encodings = tokenizer(texts.tolist(), truncation=True, padding=True, max_length=512)
+
+    # convert labels to tensorflow tensors
+    labels = tf.convert_to_tensor(df['label'].tolist())
+
+    # convert encodings to tensorflow datasets
+    dataset = tf.data.Dataset.from_tensor_slices((
+        dict(encodings),
+        labels
+    ))
+
+    return dataset

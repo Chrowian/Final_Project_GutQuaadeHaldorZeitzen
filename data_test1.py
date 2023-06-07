@@ -32,18 +32,22 @@ if input == 'y' or input == '':
     X_text = ps.preprocess_space(X_textlower)
     X_titlelower = lct.Lowercase(X_title)
     X_title = ps.preprocess_space(X_titlelower)
-    vocab_d = wtn.get_vocab(X_text)
+    vocab_d = wtn.get_vocab(X_text, n_words=10000)
 
     # # Combining title and text to dataframe
     df = pd.DataFrame({'title': X_title, 'text': X_text, 'label': y})
+    # make combined text
+    #df['total'] = df['title'] + ' ' + df['text']
 
 if input == 'n':
     df = pd.DataFrame({'title': X_title, 'text': X_text, 'label': y})
+    #df['total'] = df['title'] + ' ' + df['text']
 
 # Tokenising the data
 print("Tokenising data...")
 
-df2 = tok.tokenize_dataframe(df, vocab_size=10000, max_length=100)
+df2 = tok.tokenize_dataframe(df, vocab_size=10000, max_length=300)
+#df2 = tok.tokenize_vocab(df, vocab_d, max_length=300)
 data = df2['text']
 labels = df2['label'].values
 #%%

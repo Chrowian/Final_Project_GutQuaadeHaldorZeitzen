@@ -5,7 +5,8 @@ import get_data
 
 def flag_vocab(X, substrings):
     """
-    takes dataframe X and labels y
+    takes dataframe X and a list of substrings to be searched for
+    Returns a merged dataframe with X and 1/0 columns named after the list of substrings
     """
     # search of specific phrases - not currently used
     substrings = substrings
@@ -28,6 +29,7 @@ def flag_vocab(X, substrings):
 
 if __name__ == "__main__":
     None
+
 # final_df = flag_vocab(X, ['http', 'Trump', 'BREAKING'])
 # print(final_df)
 

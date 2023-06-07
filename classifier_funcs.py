@@ -103,7 +103,7 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
     if train == 'y':
 
         model = Sequential()
-        model.add(Embedding(max_features, 32))  # Reduced number of units in the Embedding layer
+        model.add(Embedding(max_features+1, 32))  # Reduced number of units in the Embedding layer
         model.add(LSTM(32, dropout=0.2, recurrent_dropout=0.2))  # Reduced number of units in the LSTM layer
         model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.01)))  # Added L2 regularization to the Dense layer
 
@@ -163,3 +163,64 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
     print('\nEvaluating the model...')
 
     loss, accuracy, y_pre, y_pred, roc_auc = evaluate_model(model_best, X_val, y_val)
+
+
+from lightgbm import LGBMClassifier
+from sklearn.metrics import accuracy_score, log_loss, confusion_matrix, roc_auc_score
+
+def LightGBM(X_train, y_train, X_test, y_test):
+    """
+    Trains a LightGBM binary classifier on the provided training data, 
+    then makes predictions on the test data and evaluates the model's performance.
+
+    Parameters
+    ----------
+    X_train : array-like of shape (n_samples, n_features)
+        The training input samples.
+    y_train : array-like of shape (n_samples,)
+        The target values (class labels) as integers or strings.
+    X_test : array-like of shape (n_samples, n_features)
+        The test input samples.
+    y_test : array-like of shape (n_samples,)
+        The true values (class labels) for the test input samples.
+
+    Returns
+    -------
+    accuracy : float
+        The accuracy of the model on the test data.
+    bce_loss : float
+        The binary cross-entropy loss of the model on the test data.
+    conf_matrix : ndarray of shape (n_classes, n_classes)
+        The confusion matrix of the model's predictions on the test data.
+    roc_auc : float
+        The ROC AUC score of the model on the test data.
+    """
+    # Initialize our classifier
+    clf = LGBMClassifier()
+
+    # Train the classifier
+    clf.fit(X_train, y_train)
+
+    # Make predictions on the test set
+    y_pred = clf.predict(X_test)
+
+    # Predict probabilities for log loss
+    y_pred_prob = clf.predict_proba(X_test)
+
+    # Calculate accuracy
+    accuracy = accuracy_score(y_test, y_pred)
+    print(f"Accuracy: {accuracy}")
+
+    # Calculate log loss (binary cross entropy)
+    bce_loss = log_loss(y_test, y_pred_prob)
+    print(f"Binary Cross Entropy Loss: {bce_loss}")
+
+    # Calculate confusion matrix
+    conf_matrix = confusion_matrix(y_test, y_pred)
+    print(f"Confusion Matrix: \n{conf_matrix}")
+
+    # Calculate ROC AUC score
+    roc_auc = roc_auc_score(y_test, y_pred_prob[:,1])
+    print(f"ROC AUC Score: {roc_auc}")
+
+    return accuracy, bce_loss, conf_matrix, roc_auc

@@ -6,13 +6,12 @@ import torch
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
-def get_vocab(X):
+def get_vocab(X, n_words=40000, num_articles = 10000):
     """
     :return: vocabulary dictionary of words and their corresponding indices
     """
-    senlist = X.values.tolist()[0:5000]
+    senlist = X.values.tolist()[0:num_articles]
     all_words = list(chain(*[i.lower().split() for i in senlist]))
-    n_words = 40000
     words, count = np.unique(all_words, return_counts=True)
     idxs = np.argsort(count)[-n_words:]
     vocab = ['<UNK>'] + list(words[idxs][::-1])

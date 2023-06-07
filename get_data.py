@@ -79,4 +79,6 @@ def get_text_data():
     print('y shape: ', y.shape)
     return X_text, y
 
-X, y = get_all_data()
+
+if __name__ == "__main__":
+    None

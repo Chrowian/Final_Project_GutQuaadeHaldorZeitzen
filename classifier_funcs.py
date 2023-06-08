@@ -171,68 +171,6 @@ from lightgbm import LGBMClassifier
 from lightgbm import early_stopping, log_evaluation
 from sklearn.metrics import accuracy_score, log_loss, confusion_matrix, roc_auc_score
 
-# def LightGBM(X_train, y_train, X_test, y_test):
-#     """
-#     Trains a LightGBM binary classifier on the provided training data, 
-#     then makes predictions on the test data and evaluates the model's performance.
-
-#     Parameters
-#     ----------
-#     X_train : array-like of shape (n_samples, n_features)
-#         The training input samples.
-#     y_train : array-like of shape (n_samples,)
-#         The target values (class labels) as integers or strings.
-#     X_test : array-like of shape (n_samples, n_features)
-#         The test input samples.
-#     y_test : array-like of shape (n_samples,)
-#         The true values (class labels) for the test input samples.
-
-#     Returns
-#     -------
-#     accuracy : float
-#         The accuracy of the model on the test data.
-#     bce_loss : float
-#         The binary cross-entropy loss of the model on the test data.
-#     conf_matrix : ndarray of shape (n_classes, n_classes)
-#         The confusion matrix of the model's predictions on the test data.
-#     roc_auc : float
-#         The ROC AUC score of the model on the test data.
-#     """
-
-#     print("\nTraining LightGBM classifier...")
-
-#     # Initialize our classifier
-#     clf = LGBMClassifier()
-
-#     # Train the classifier
-#     clf.fit(X_train, y_train)
-
-#     # Make predictions on the test set
-#     y_pred = clf.predict(X_test)
-
-#     # Predict probabilities for log loss
-#     y_pred_prob = clf.predict_proba(X_test)
-
-#     print("\nEvaluating model...")
-
-#     # Calculate accuracy
-#     accuracy = accuracy_score(y_test, y_pred)
-#     print(f"\nAccuracy: {accuracy}")
-
-#     # Calculate log loss (binary cross entropy)
-#     bce_loss = log_loss(y_test, y_pred_prob)
-#     print(f"\nBinary Cross Entropy Loss: {bce_loss}")
-
-#     # Calculate confusion matrix
-#     conf_matrix = confusion_matrix(y_test, y_pred)
-#     print(f"\nConfusion Matrix: \n{conf_matrix}")
-
-#     # Calculate ROC AUC score
-#     roc_auc = roc_auc_score(y_test, y_pred_prob[:,1])
-#     print(f"\nROC AUC Score: {roc_auc}")
-
-#     return accuracy, bce_loss, conf_matrix, roc_auc
-
 def LightGBM(X_train, y_train, X_test, y_test, early_stop = True):
     """
     Trains a LightGBM binary classifier on the provided training data, 

@@ -1,2 +1,5 @@
 WELFake_Dataset.csv
 lgbm.py
+tree_final.py
+logistic_regression.py
+NaiveBayes.py

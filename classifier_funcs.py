@@ -322,8 +322,6 @@ def plot_confusion_matrix_and_roc(y_test, y_pred, y_pred_probs, name, vobab, typ
     ax1.set_xlabel('Predicted Label')
     ax1.set_ylabel('True Label')
 
-    
-
     # Plot ROC curve
     ax2.plot(fpr, tpr, color='b', label='ROC curve (area = %0.2f)' % roc_auc)
     ax2.plot([0, 1], [0, 1], color='k', linestyle='--')

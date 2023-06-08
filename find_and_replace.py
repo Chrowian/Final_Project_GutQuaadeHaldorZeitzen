@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import re
 
 def replace_words(input_string,identifier='\*',replace_with='wordwithasterisk'):
     """

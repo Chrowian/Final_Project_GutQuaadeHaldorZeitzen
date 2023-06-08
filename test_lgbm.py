@@ -54,7 +54,7 @@ else:
     df_in = pd.DataFrame({'title': X_title, 'text': X_text})
 #%%
 print("\nVectorizing & Splitting Data...")
-X, vec = ps.preprocess_text(df_in, ['title', 'text'])
+X, vec = ps.preprocess_text(df_in, ['title', 'text'], max_features=5000)
 #%%
 
 # make input data, drop labels from dataframe

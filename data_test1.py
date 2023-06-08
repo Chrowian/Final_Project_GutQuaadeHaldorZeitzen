@@ -32,7 +32,7 @@ if input == 'y' or input == '':
     X_text = ps.preprocess_space(X_textlower)
     X_titlelower = lct.Lowercase(X_title)
     X_title = ps.preprocess_space(X_titlelower)
-    vocab_d = wtn.get_vocab(X_text, n_words=10000)
+    #vocab_d = wtn.get_vocab(X_text, n_words=10000)
 
     # # Combining title and text to dataframe
     df = pd.DataFrame({'title': X_title, 'text': X_text, 'label': y})

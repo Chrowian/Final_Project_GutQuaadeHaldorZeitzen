@@ -262,7 +262,7 @@ def LightGBM(X_train, y_train, X_test, y_test, early_stop = True):
     print("\nTraining LightGBM classifier...")
 
     # Initialize our classifier with specified parameters to combat overfitting
-    clf = LGBMClassifier(n_estimators=100, learning_rate=0.01, max_depth=4, subsample=0.8, reg_alpha=0.1, reg_lambda=0.1)
+    clf = LGBMClassifier(n_estimators=100, learning_rate=0.01, max_depth=3, subsample=0.8, reg_alpha=0.1, reg_lambda=0.1)
 
     if early_stop == True:
         # Further split the training data into training and validation sets for early stopping

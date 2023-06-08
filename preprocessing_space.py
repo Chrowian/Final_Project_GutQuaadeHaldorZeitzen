@@ -45,13 +45,21 @@ from nltk.stem import PorterStemmer
 def preprocess_text(df, text_columns, non_text_columns = None, max_features=5000):
     """
     Function to preprocess text columns and combine with other features in a DataFrame.
-    Args:
+
+    Args
+    ----------
         df (pandas.DataFrame): the input DataFrame.
+
         text_columns (list of str): the names of the text columns to vectorize. ['title', 'text']
-        non_text_columns (list of str): the names of the non-text columns to include in the feature matrix.
+
+        non_text_columns (list of str): the names of the non-text columns to include in the feature matrix. Defaults to None.
+
         max_features (int, optional): the maximum number of features for the TfidfVectorizer. Defaults to 5000.
-    Returns:
+
+    Returns
+    ----------
         X (scipy.sparse.csr.csr_matrix): the combined feature matrix.
+        
         vectorizers (dict): dictionary mapping column names to trained TfidfVectorizers.
     """
 

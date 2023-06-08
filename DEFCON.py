@@ -4,7 +4,7 @@ import find_and_replace
 import preprocessing_space
 import pandas as pd
 
-def DEFCON5(NN=True,verbose=False,save_to_file=False,filename='DEFCON5_data.csv'):
+def DEFCON5(NN=True,verbose=False,save_to_file=False,filename='DEFCON5_data'):
     """
     This function works like get_data.get_text_data() and also conducts the following operations:
     lowercase text
@@ -16,13 +16,15 @@ def DEFCON5(NN=True,verbose=False,save_to_file=False,filename='DEFCON5_data.csv'
     NN=True: bool. Use if the output is to be used for Neural networks. If false, then stopwords will be removed
     verbose=False: bool. Set true if progress status is to be printed
     save_to_file=False: bool. If true, results are saved to a .csv file with the same format as the original dataset (WELFake_Dataset.csv).
-    filename='DEFCON5_data.csv': string. Filename for saved file. Irrelevant if save_to_file=False
+    filename='DEFCON5_data.csv': string. Filename for saved file. Irrelevant if save_to_file=False. Do not include file extensions
     
     """
     if NN:
         typestring = 'Neural Network'
+        filestring = '_NN.csv'
     else:
-        typestring = 'Tree Based Algorithm'
+        typestring = 'Decision Tree Based Algorithm'
+        filestring = '_DT.csv'
     if verbose:
         print('DEFCON5 data import for '+typestring+'\nGetting data...')
     X_text,y = get_data.get_text_data()
@@ -77,7 +79,7 @@ def DEFCON5(NN=True,verbose=False,save_to_file=False,filename='DEFCON5_data.csv'
         data_to_export=pd.concat({'title': X_title_final,
                       'text': X_text_final,
                       'label': y},axis=1)
-        data_to_export.to_csv(filename)
+        data_to_export.to_csv(filename+filestring)
     
     if verbose:
         print('DEFCON5 done')

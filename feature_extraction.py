@@ -72,11 +72,6 @@ def flag_vocab(X, y):
     return merged_df, substrings
 
 
-X, y = get_data.get_all_data()
-X_new, substrings = flag_vocab(X, y)
-print(X_new)
-print(substrings)
-
 if __name__ == "__main__":
     None
 

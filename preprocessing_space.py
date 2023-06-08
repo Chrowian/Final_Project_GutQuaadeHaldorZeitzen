@@ -42,7 +42,7 @@ from nltk.stem import PorterStemmer
 
 # for tree based classifiers
 
-def preprocess_text(df, text_columns, non_text_columns = None, max_features=5000):
+def preprocess_text(df, text_columns, non_text_columns = None, max_features=40000):
     """
     Function to preprocess text columns and combine with other features in a DataFrame.
 
@@ -59,7 +59,7 @@ def preprocess_text(df, text_columns, non_text_columns = None, max_features=5000
     Returns
     ----------
         X (scipy.sparse.csr.csr_matrix): the combined feature matrix.
-        
+
         vectorizers (dict): dictionary mapping column names to trained TfidfVectorizers.
     """
 
@@ -67,7 +67,7 @@ def preprocess_text(df, text_columns, non_text_columns = None, max_features=5000
     feature_matrices = []
 
     for col in text_columns:
-        vectorizer = TfidfVectorizer(max_features=max_features, stop_words='english')
+        vectorizer = TfidfVectorizer(max_features=max_features)
         X_col = vectorizer.fit_transform(df[col])
         vectorizers[col] = vectorizer
         feature_matrices.append(X_col)

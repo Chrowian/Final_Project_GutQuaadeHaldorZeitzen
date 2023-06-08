@@ -42,7 +42,7 @@ from nltk.stem import PorterStemmer
 
 # for tree based classifiers
 
-def preprocess_text(df, text_columns, non_text_columns = None, max_features=40000):
+def preprocess_text(df, text_columns, non_text_columns=None, max_features=40000, print_vocabulary=False):
     """
     Function to preprocess text columns and combine with other features in a DataFrame.
 
@@ -55,6 +55,8 @@ def preprocess_text(df, text_columns, non_text_columns = None, max_features=4000
         non_text_columns (list of str): the names of the non-text columns to include in the feature matrix. Defaults to None.
 
         max_features (int, optional): the maximum number of features for the TfidfVectorizer. Defaults to 5000.
+
+        print_vocabulary (bool, optional): if True, print the vocabulary of each text column. Defaults to False.
 
     Returns
     ----------
@@ -71,6 +73,10 @@ def preprocess_text(df, text_columns, non_text_columns = None, max_features=4000
         X_col = vectorizer.fit_transform(df[col])
         vectorizers[col] = vectorizer
         feature_matrices.append(X_col)
+        
+        # Print the vocabulary if requested
+        if print_vocabulary:
+            print(f'Vocabulary for {col}: {vectorizer.get_feature_names_out()}')
 
     if non_text_columns is not None:
         for col in non_text_columns:
@@ -80,6 +86,7 @@ def preprocess_text(df, text_columns, non_text_columns = None, max_features=4000
     X = hstack(feature_matrices)
 
     return X, vectorizers
+
 
 
 # def preprocess_text_old(df, columns, use_stemming=True, max_features=5000):

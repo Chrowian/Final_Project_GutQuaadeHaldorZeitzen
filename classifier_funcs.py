@@ -94,7 +94,9 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
 
     name = get_next_model_number('RNN_Model')
 
-    X_train, X_val, y_train, y_val = train_test_split(data, labels, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(data, labels, test_size=0.3, random_state=42)
+
+    X_val, X_test, y_val, y_test = train_test_split(X_val, y_val, test_size=0.5, random_state=42)
 
     ############################################# Train the model #############################################
 
@@ -162,7 +164,7 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
 
     print('\nEvaluating the model...')
 
-    loss, accuracy, y_pre, y_pred, roc_auc = evaluate_model(model_best, X_val, y_val)
+    loss, accuracy, y_pre, y_pred, roc_auc = evaluate_model(model_best, X_test, y_test)
 
 
 from lightgbm import LGBMClassifier

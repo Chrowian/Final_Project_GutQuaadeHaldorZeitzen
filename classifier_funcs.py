@@ -266,16 +266,8 @@ def LightGBM(X_train, y_train, X_test, y_test, early_stop = True):
     # Initialize our classifier with specified parameters to combat overfitting
     clf = LGBMClassifier(n_estimators=100, learning_rate=0.01, max_depth=3, subsample=0.8, reg_alpha=0.1, reg_lambda=0.1)
 
-    if early_stop == True:
-        # Further split the training data into training and validation sets for early stopping
-        X_train_sub, X_val, y_train_sub, y_val = train_test_split(X_train, y_train, test_size=0.2, random_state=42)
-
-        # Train the classifier with early stopping
-        clf.fit(X_train_sub, y_train_sub, eval_set=[(X_val, y_val)], callbacks=[early_stopping(50), log_evaluation(period=100)])
-
-    else:
-        # Train the classifier
-        clf.fit(X_train, y_train)
+    # Train the classifier
+    clf.fit(X_train, y_train)
 
     # Make predictions on the test set
     y_pred = clf.predict(X_test)

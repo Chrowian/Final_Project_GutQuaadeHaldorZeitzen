@@ -5,3 +5,9 @@ logistic_regression.py
 NaiveBayes.py
 DEFCON5_data_DT.csv
 MyFuncs.py
+attention_masks.pkl
+.gitignore
+input_ids.pkl
+.gitignore
+BERT.py
+labels.pkl

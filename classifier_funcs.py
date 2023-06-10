@@ -25,6 +25,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
+
+
 ############################################# Helper Functions #############################################
 
 def get_next_model_number(directory):
@@ -53,7 +55,7 @@ def get_next_model_number(directory):
     # Return the next model number
     return highest_num + 1
 
-def evaluate_model(model, X_test, y_test):
+def evaluate_model(model, X_test, y_test, plot = False, vocab_size = None, name = None):
         # Calculate loss and accuracy 
         loss, accuracy = model.evaluate(X_test, y_test, verbose=0)
         print("Loss: ", loss)
@@ -67,24 +69,56 @@ def evaluate_model(model, X_test, y_test):
 
         # Calculate Confusion Matrix
         print("Confusion Matrix:")
-        print(confusion_matrix(y_test, y_pred))
+        conf_matrix = confusion_matrix(y_test, y_pred)
+        print(conf_matrix)
 
         # Calculate Precision, Recall, F1 Score
         print("Classification Report:")
         print(classification_report(y_test, y_pred))
 
         # Calculate ROC Curve and AUC
-        fpr, tpr, thresholds = roc_curve(y_test, y_pred)
+        fpr, tpr, thresholds = roc_curve(y_test, y_pre)
         roc_auc = auc(fpr, tpr)
         print("AUC of ROC Curve:", roc_auc)
-        
+
+        if plot:
+            # Create a figure
+            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(12, 5))
+
+            fig.suptitle(f'Confusion Matrix and ROC Curve\nBest LSTM Model', fontsize=20, y = 1.05)
+
+            # Plot confusion matrix
+            sns.heatmap(conf_matrix, cmap='Blues', annot=True, fmt="d", ax=ax1, vmin = 0)
+            #ax1.set_title('Confusion Matrix')
+            ax1.set_xlabel('Predicted Label')
+            ax1.set_ylabel('True Label')
+
+            # Plot ROC curve
+            ax2.plot(fpr, tpr, color='b', label='ROC curve (area = %0.2f)' % roc_auc)
+            ax2.plot([0, 1], [0, 1], color='k', linestyle='--')
+            ax2.set_xlim([-0.01, 1.01])
+            ax2.set_ylim([-0.01, 1.01])
+            ax2.set_xlabel('False Positive Rate')
+            ax2.set_ylabel('True Positive Rate')
+            plot_params(ax2)
+
+            data = [accuracy, loss, roc_auc, vocab_size]
+            
+            string = f'Accuracy: {data[0]:.4f}\nBCE (LogLoss): {data[1]:.4f}\nROC AUC: {data[2]:.3f}\n\nVobaulary Size: {data[3]}'
+            plot_text(ax2, 0.5, 0.1, string, size = 12, box = True, color = 'k', font_style = 'italic')
+
+            # Save the figure
+            plt.savefig(f'Result_Models/RNN/evaluation_RNNLSTM_{name}_{vocab_size}.png', dpi=300, bbox_inches='tight')
+
+            plt.show()
+
         # Return all metrics
         return loss, accuracy, y_pre, y_pred, roc_auc
 
 
 ############################################# RNN-LSTM Function #############################################
 
-def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000):
+def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000, names = None, plotIT = False, train = None):
     """
     Function to run a RNN-LSTM model on the data.
     data: dataframe with columns 'title', 'text' and 'label'
@@ -94,7 +128,7 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
     name: name of the model ( used to save the model )
     """
 
-    name = get_next_model_number('RNN_Model')
+    name = get_next_model_number('Result_Models/RNN_MODELS')
 
     X_train, X_val, y_train, y_val = train_test_split(data, labels, test_size=0.3, random_state=42)
 
@@ -102,12 +136,14 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
 
     ############################################# Train the model #############################################
 
-    train = input('\nTrain the model? (y/n): ')
+    if train is None:
+
+        train = input('\nTrain the model? (y/n): ')
 
     if train == 'y':
 
         model = Sequential()
-        model.add(Embedding(max_features+1, 32))  # Reduced number of units in the Embedding layer
+        model.add(Embedding(max_features, 32))  # Reduced number of units in the Embedding layer
         model.add(LSTM(32, dropout=0.2, recurrent_dropout=0.2))  # Reduced number of units in the LSTM layer
         model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.01)))  # Added L2 regularization to the Dense layer
 
@@ -123,7 +159,7 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
         print(model.summary())
 
         # Specify the path where you want to save the model
-        filepath = f"RNN_Model/saved_model_{name}.h5"
+        filepath = f"Result_Models/RNN_MODELS/saved_model_{name}.h5"
 
         # Initialize ModelCheckpoint
         checkpoint = ModelCheckpoint(filepath, monitor='val_loss', verbose=1, save_best_only=True, mode='min')
@@ -134,8 +170,12 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
                             epochs=epochs, 
                             validation_data=(X_val, y_val),
                             callbacks=[checkpoint])
+        
+        if not plotIT:
+            plot = input('\nPlot the loss? (y/n): ')
 
-        plot = input('\nPlot the loss? (y/n): ')
+        else:
+            plot = 'y'
 
         if plot == 'y':
 
@@ -146,27 +186,33 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
             ax.set_ylabel('Loss')
             ax.set_xlabel('Epoch')
             ax.set_xticks(np.arange(0, epochs+1, 5))
-            ax.legend(loc='upper right')
+            legend(ax, loc='upper right')
+            plot_params(ax)
             plt.tight_layout()
-            plt.savefig(f'RNN_Model/loss_saved_{name}.png', dpi=300, bbox_inches='tight')
+            plt.savefig(f'Result_Models/RNN/loss_{names}_{max_features}.png', dpi=300, bbox_inches='tight')
             plt.show()
-            save = input('\nSave the plot? (y/n): ')
+
+            if not plotIT:
+                save = input('\nSave the plot? (y/n): ')
+
+            else:
+                save = 'y'
             if save == 'n' or '':
-                os.remove(f'RNN_Model/loss_saved_{name}.png')
+                os.remove(f'Result_Models/RNN/loss_{names}_{max_features}.png')
 
 
-        model_best = load_model(f'RNN_Model/saved_model_{name}.h5')
+        model_best = load_model(f'Result_Models/RNN_MODELS/saved_model_{name}.h5')
 
         
     if train == 'n' or train == '':
         name_in = input('\nName of the model: ')
-        model_best = load_model(f'RNN_Model/saved_model_{name_in}.h5')
+        model_best = load_model(f'Result_Models/RNN_MODELS/saved_model_{name_in}.h5')
 
     ############################################# Evaluate the model #############################################
 
     print('\nEvaluating the model...')
 
-    loss, accuracy, y_pre, y_pred, roc_auc = evaluate_model(model_best, X_test, y_test)
+    loss, accuracy, y_pre, y_pred, roc_auc = evaluate_model(model_best, X_test, y_test, plot = plotIT, vocab_size=max_features, name = names)
 
 
 from lightgbm import LGBMClassifier
@@ -339,6 +385,6 @@ def plot_confusion_matrix_and_roc(y_test, y_pred, y_pred_probs, name, vobab, typ
         plot_text(ax2, 0.5, 0.1, string, size = 12, box = True, color = 'k', font_style = 'italic')
 
     # Save the figure
-    plt.savefig(f'Result_Models/evaluation_{name}_{vobab}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'Result_Models/Tree/evaluation_{type}_{name}_{vobab}.png', dpi=300, bbox_inches='tight')
 
     plt.show()

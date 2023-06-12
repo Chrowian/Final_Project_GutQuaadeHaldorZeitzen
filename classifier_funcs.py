@@ -284,7 +284,7 @@ def LightGBM(X_train, y_train, X_test, y_test):
     roc_auc = roc_auc_score(y_test, y_pred_prob[:,1])
     print(f"\nROC AUC Score: {roc_auc}")
 
-    return accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob[:,1]
+    return accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob[:,1], clf
 
 
 ####################
@@ -385,6 +385,46 @@ def plot_confusion_matrix_and_roc(y_test, y_pred, y_pred_probs, name, vobab, typ
         plot_text(ax2, 0.5, 0.1, string, size = 12, box = True, color = 'k', font_style = 'italic')
 
     # Save the figure
-    plt.savefig(f'Result_Models/Tree/evaluation_{type}_{name}_{vobab}.png', dpi=300, bbox_inches='tight')
+    #plt.savefig(f'Result_Models/Tree/evaluation_{type}_{name}_{vobab}.png', dpi=300, bbox_inches='tight')
 
     plt.show()
+
+####################
+
+import numpy as np
+from sklearn.model_selection import learning_curve
+import matplotlib.pyplot as plt
+from lightgbm import LGBMClassifier
+
+def plot_learning_curve(model, X, y, cv = 5, num = 10):
+
+
+    train_sizes, train_scores, test_scores = learning_curve(model, X, y, cv=cv, train_sizes=np.linspace(0.1, 1.0, num))
+
+    train_scores_mean = np.mean(train_scores, axis=1)
+    train_scores_std = np.std(train_scores, axis=1)
+    test_scores_mean = np.mean(test_scores, axis=1)
+    test_scores_std = np.std(test_scores, axis=1)
+
+    plt.fill_between(train_sizes, train_scores_mean - train_scores_std, train_scores_mean + train_scores_std, alpha=0.1, color='r')
+    plt.fill_between(train_sizes, test_scores_mean - test_scores_std, test_scores_mean + test_scores_std, alpha=0.1, color='g')
+
+    plt.plot(train_sizes, train_scores_mean, 'o-', color='r', label='Training score')
+    plt.plot(train_sizes, test_scores_mean, 'o-', color='g', label='Cross-validation score')
+
+    plt.title('Learning curves with error bars')
+    plt.xlabel('Training examples')
+    plt.ylabel('Score')
+    plt.legend(loc='best')
+    plt.show()
+
+####################
+
+from sklearn.model_selection import cross_val_score
+
+def cross_val(model, X, y, cv = 5):
+    scores = cross_val_score(model, X, y, cv=cv)
+
+    print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+
+    return scores

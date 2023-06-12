@@ -139,9 +139,16 @@ elif typedataProc == '4':
 
 print("\nTraining Decision Tree Classifier...")
 # Decision Tree Classifier
-accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob = cf.LightGBM(X_train, y_train, X_test, y_test)
+accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob, clf = cf.LightGBM(X_train, y_train, X_test, y_test)
 
 plots = input('Plot the Evaluation? (y/n): ')
 
 if plots == 'y' or plots == '':
     cf.plot_confusion_matrix_and_roc(y_test, y_pred, y_pred_prob, typedataProc, vocabSi, data = [accuracy, bce_loss, roc_auc, vocabSi])
+
+plot_learn = input('Plot Learning Curve? (y/n): ')
+
+if plot_learn == 'y' or plot_learn == '':
+    cf.plot_learning_curve(clf, X, y, cv = 5, num=20)
+
+    #cf.cross_val(clf, X, y)

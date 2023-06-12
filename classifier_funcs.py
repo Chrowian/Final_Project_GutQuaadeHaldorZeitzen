@@ -104,7 +104,7 @@ def evaluate_model(model, X_test, y_test, plot = False, vocab_size = None, name 
 
             data = [accuracy, loss, roc_auc, vocab_size]
             
-            string = f'Accuracy: {data[0]:.4f}\nBCE (LogLoss): {data[1]:.4f}\nROC AUC: {data[2]:.3f}\n\nVobaulary Size: {data[3]}'
+            string = f'Accuracy: {data[0]:.4f}\nBCE (LogLoss): {data[1]:.4f}\nROC AUC: {data[2]:.3f}\n\nVocabulary Size: {data[3]}'
             plot_text(ax2, 0.5, 0.1, string, size = 12, box = True, color = 'k', font_style = 'italic')
 
             # Save the figure
@@ -143,10 +143,10 @@ def RNN_LSTM(data, labels, epoch = 20, batchsize = 256 * 8, max_features = 10000
     if train == 'y':
 
         model = Sequential()
-        model.add(Embedding(max_features, 32))  # Reduced number of units in the Embedding layer
-        model.add(LSTM(32, dropout=0.2, recurrent_dropout=0.2))  # Reduced number of units in the LSTM layer
-        model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.01)))  # Added L2 regularization to the Dense layer
-
+        model.add(Embedding(max_features, 32)) 
+        model.add(LSTM(32, dropout=0.2, recurrent_dropout=0.2)) 
+        model.add(Dense(1, activation='sigmoid', kernel_regularizer=regularizers.l2(0.01))) 
+        
         batch_size = batchsize
         epochs = epoch
 

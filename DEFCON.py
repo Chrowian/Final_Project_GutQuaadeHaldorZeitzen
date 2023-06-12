@@ -7,7 +7,7 @@ import pandas as pd
 def DEFCON5(NN=True,verbose=False,save_to_file=False,filename='DEFCON5_data'):
     """
     This function works like get_data.get_text_data() and also conducts the following operations:
-    lowercase text
+    lowercase text, preprocess_space, find and replace (@#*1), remove stopwords, and the data cleaning included in get_data.
     
     Parameters
     None
@@ -83,5 +83,132 @@ def DEFCON5(NN=True,verbose=False,save_to_file=False,filename='DEFCON5_data'):
     
     if verbose:
         print('DEFCON5 done')
+    
+    return X_title_final, X_text_final, y
+
+def DEFCON4(NN=True,verbose=False,save_to_file=False,filename='DEFCON4_data'):
+    """
+    This function works like get_data.get_text_data() and also conducts the following operations:
+    lowercase text, preprocess_space, remove stopwords, and the data cleaning included in get_data.
+    
+    Parameters
+    None
+    
+    Kwargs
+    NN=True: bool. Use if the output is to be used for Neural networks. If false, then stopwords will be removed
+    verbose=False: bool. Set true if progress status is to be printed
+    save_to_file=False: bool. If true, results are saved to a .csv file with the same format as the original dataset (WELFake_Dataset.csv).
+    filename='DEFCON5_data.csv': string. Filename for saved file. Irrelevant if save_to_file=False. Do not include file extensions
+    
+    """
+    if NN:
+        typestring = 'Neural Network'
+        filestring = '_NN.csv'
+    else:
+        typestring = 'Decision Tree Based Algorithm'
+        filestring = '_DT.csv'
+    if verbose:
+        print('DEFCON5 data import for '+typestring+'\nGetting data...')
+    X_text,y = get_data.get_text_data()
+    X_title,y = get_data.get_title_data()
+    
+    if verbose:
+        print('Making text lowercase...')
+    X_text_lowercase = lowercasetext.Lowercase(X_text)
+    X_title_lowercase = lowercasetext.Lowercase(X_title)
+        
+    if verbose:
+        print('Converting ""dickhead"" to "" dickhead ""...')
+    X_text_lwr_spaced = preprocessing_space.preprocess_space(X_text_lowercase)
+    X_title_lwr_spaced = preprocessing_space.preprocess_space(X_title_lowercase)
+    
+    X_text_final = X_text_lwr_spaced
+    X_title_final = X_title_lwr_spaced
+    
+    if not NN:
+        if verbose:
+            print('Removing stopwords...')
+        X_text_lwr_spa_stop = preprocessing_space.remove_stopwords(X_text_lwr_spaced)
+        X_title_lwr_spa_stop = preprocessing_space.remove_stopwords(X_title_lwr_spaced)
+        
+        X_text_final = X_text_lwr_spa_stop
+        X_title_final = X_title_lwr_spa_stop
+    
+    if save_to_file:
+        if verbose:
+            print('Saving to file...')
+        data_to_export=pd.concat({'title': X_title_final,
+                      'text': X_text_final,
+                      'label': y},axis=1)
+        data_to_export.to_csv(filename+filestring)
+    
+    if verbose:
+        print('DEFCON4 done')
+    
+    return X_title_final, X_text_final, y
+
+def DEFCON3(NN=True,verbose=False,save_to_file=False,filename='DEFCON3_data'):
+    """
+    This function works like get_data.get_text_data() and also conducts the following operations:
+    lowercase text, preprocess_space, remove stopwords, and converting NaNs to empty strings
+    
+    Parameters
+    None
+    
+    Kwargs
+    NN=True: bool. Use if the output is to be used for Neural networks. If false, then stopwords will be removed
+    verbose=False: bool. Set true if progress status is to be printed
+    save_to_file=False: bool. If true, results are saved to a .csv file with the same format as the original dataset (WELFake_Dataset.csv).
+    filename='DEFCON5_data.csv': string. Filename for saved file. Irrelevant if save_to_file=False. Do not include file extensions
+    
+    """
+    if NN:
+        typestring = 'Neural Network'
+        filestring = '_NN.csv'
+    else:
+        typestring = 'Decision Tree Based Algorithm'
+        filestring = '_DT.csv'
+    if verbose:
+        print('DEFCON5 data import for '+typestring+'\nGetting data...')
+    df = pd.read_csv('WELFake_Dataset.csv')
+    # Replace NaNs with empty string in 'title' and 'text' columns
+    df['title'] = df['title'].fillna('')
+    df['text'] = df['text'].fillna('')
+    X_title = df['title']
+    X_text = df['text']
+    y = df['label']
+    
+    if verbose:
+        print('Making text lowercase...')
+    X_text_lowercase = lowercasetext.Lowercase(X_text)
+    X_title_lowercase = lowercasetext.Lowercase(X_title)
+        
+    if verbose:
+        print('Converting ""dickhead"" to "" dickhead ""...')
+    X_text_lwr_spaced = preprocessing_space.preprocess_space(X_text_lowercase)
+    X_title_lwr_spaced = preprocessing_space.preprocess_space(X_title_lowercase)
+    
+    X_text_final = X_text_lwr_spaced
+    X_title_final = X_title_lwr_spaced
+    
+    if not NN:
+        if verbose:
+            print('Removing stopwords...')
+        X_text_lwr_spa_stop = preprocessing_space.remove_stopwords(X_text_lwr_spaced)
+        X_title_lwr_spa_stop = preprocessing_space.remove_stopwords(X_title_lwr_spaced)
+        
+        X_text_final = X_text_lwr_spa_stop
+        X_title_final = X_title_lwr_spa_stop
+    
+    if save_to_file:
+        if verbose:
+            print('Saving to file...')
+        data_to_export=pd.concat({'title': X_title_final,
+                      'text': X_text_final,
+                      'label': y},axis=1)
+        data_to_export.to_csv(filename+filestring)
+    
+    if verbose:
+        print('DEFCON3 done')
     
     return X_title_final, X_text_final, y

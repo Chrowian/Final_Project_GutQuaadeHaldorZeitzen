@@ -2,7 +2,7 @@
 # Three levels of tree classifiers:
 #%%
 
-typedataProc = input("Type of DataProcessing:\n1. Dirty Data\n2. Preprocess Data\n3. DEFCON\n4. Feature Extraction\n")
+typedataProc = input("Type of DataProcessing:\n1. Dirty Data\n2. Preprocess Data\n3. DEFCON3\n4. DEFCON4\n5. DEFCON5\n6. Feature Extraction\n")
 
 
 vocabSi = input("Vocabsize: ")
@@ -81,8 +81,40 @@ elif typedataProc == '2':
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-
 elif typedataProc == '3':
+
+    X_title_final, X_text_final, y = DEFCON.DEFCON3(NN = False,save_to_file=True)
+
+    print("\nSplitting data...")
+
+    df_in = pd.DataFrame({'title': X_title_final, 'text': X_text_final})
+
+    ############################# Vectorizing Data #############################
+
+    print("\nVectorizing & Splitting Data...")
+    X, vec = ps.preprocess_text(df_in, ['title', 'text'], max_features=vocabSi, print_vocabulary=False)
+
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+elif typedataProc == '4':
+
+    X_title_final, X_text_final, y = DEFCON.DEFCON4(NN = False,save_to_file=True)
+
+    print("\nSplitting data...")
+
+    df_in = pd.DataFrame({'title': X_title_final, 'text': X_text_final})
+
+    ############################# Vectorizing Data #############################
+
+    print("\nVectorizing & Splitting Data...")
+    X, vec = ps.preprocess_text(df_in, ['title', 'text'], max_features=vocabSi, print_vocabulary=False)
+
+    # Split data
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    
+elif typedataProc == '5':
 
     X_title_final, X_text_final, y = DEFCON.DEFCON5(NN = False,save_to_file=True)
 
@@ -98,7 +130,7 @@ elif typedataProc == '3':
     # Split data
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
 
-elif typedataProc == '4':
+elif typedataProc == '6':
     print('lol, not done yet')
 
     df = pd.read_csv('WELFake_Dataset.csv')

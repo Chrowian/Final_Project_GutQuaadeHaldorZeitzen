@@ -163,7 +163,7 @@ elif typedataProc == '6':
     print(X.shape)
 
     # Split data
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
 
 ############################# Tree classifiers #############################
@@ -171,12 +171,12 @@ elif typedataProc == '6':
 
 print("\nTraining Decision Tree Classifier...")
 # Decision Tree Classifier
-accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob, clf = cf.LightGBM(X_train, y_train, X_test, y_test)
+accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob, clf, y_test_new = cf.LightGBM(X_train, y_train, X_test, y_test)
 
 plots = input('Plot the Evaluation? (y/n): ')
 
 if plots == 'y' or plots == '':
-    cf.plot_confusion_matrix_and_roc(y_test, y_pred, y_pred_prob, typedataProc, vocabSi, data = [accuracy, bce_loss, roc_auc, vocabSi])
+    cf.plot_confusion_matrix_and_roc(y_test_new, y_pred, y_pred_prob, typedataProc, vocabSi, data = [accuracy, bce_loss, roc_auc, vocabSi])
 
 plot_learn = input('Plot Learning Curve? (y/n): ')
 

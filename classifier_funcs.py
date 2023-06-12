@@ -237,6 +237,10 @@ def LightGBM(X_train, y_train, X_test, y_test):
         The test input samples.
     y_test : array-like of shape (n_samples,)
         The true values (class labels) for the test input samples.
+    test_size : float, optional (default=0.5)
+        The proportion of the test data to be used as the test set, with the remainder used as the validation set.
+    random_state : int, optional (default=42)
+        The seed used by the random number generator.
     plot : boolean, optional (default=False)
         If True, plot a subplot with a confusion matrix and a ROC curve.
 
@@ -252,39 +256,43 @@ def LightGBM(X_train, y_train, X_test, y_test):
         The ROC AUC score of the model on the test data.
     """
 
+    print("\nSplitting test data into validation and test sets...")
+
+    X_val, X_test_new, y_val, y_test_new = train_test_split(X_test, y_test, test_size=0.5)
+
     print("\nTraining LightGBM classifier...")
 
     # Initialize our classifier with specified parameters to combat overfitting
     clf = LGBMClassifier(n_estimators=100, learning_rate=0.01, max_depth=3, subsample=0.8, reg_alpha=0.1, reg_lambda=0.1)
 
     # Train the classifier
-    clf.fit(X_train, y_train)
-
-    # Make predictions on the test set
-    y_pred = clf.predict(X_test)
-
-    # Predict probabilities for log loss
-    y_pred_prob = clf.predict_proba(X_test)
+    clf.fit(X_train, y_train, eval_set=(X_val, y_val), early_stopping_rounds=50, verbose=False)
 
     print("\nEvaluating model...")
 
+    # Make predictions on the new test set
+    y_pred = clf.predict(X_test_new)
+
+    # Predict probabilities for log loss
+    y_pred_prob = clf.predict_proba(X_test_new)
+
     # Calculate accuracy
-    accuracy = accuracy_score(y_test, y_pred)
+    accuracy = accuracy_score(y_test_new, y_pred)
     print(f"\nAccuracy: {accuracy}")
 
     # Calculate log loss (binary cross entropy)
-    bce_loss = log_loss(y_test, y_pred_prob)
+    bce_loss = log_loss(y_test_new, y_pred_prob)
     print(f"\nBinary Cross Entropy Loss: {bce_loss}")
 
     # Calculate confusion matrix
-    conf_matrix = confusion_matrix(y_test, y_pred)
+    conf_matrix = confusion_matrix(y_test_new, y_pred)
     print(f"\nConfusion Matrix: \n{conf_matrix}")
 
     # Calculate ROC AUC score
-    roc_auc = roc_auc_score(y_test, y_pred_prob[:,1])
+    roc_auc = roc_auc_score(y_test_new, y_pred_prob[:,1])
     print(f"\nROC AUC Score: {roc_auc}")
 
-    return accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob[:,1], clf
+    return accuracy, bce_loss, conf_matrix, roc_auc, y_pred, y_pred_prob[:,1], clf, y_test_new
 
 
 ####################
@@ -381,11 +389,11 @@ def plot_confusion_matrix_and_roc(y_test, y_pred, y_pred_probs, name, vobab, typ
     plot_params(ax2)
 
     if data is not None:
-        string = f'Accuracy: {data[0]:.4f}\nBCE (LogLoss): {data[1]:.4f}\nROC AUC: {data[2]:.3f}\n\nVobaulary Size: {data[3]}'
+        string = f'Accuracy: {data[0]:.4f}\nBCE (LogLoss): {data[1]:.4f}\nROC AUC: {data[2]:.3f}\n\nVocabulary Size: {data[3]}'
         plot_text(ax2, 0.5, 0.1, string, size = 12, box = True, color = 'k', font_style = 'italic')
 
     # Save the figure
-    #plt.savefig(f'Result_Models/Tree/evaluation_{type}_{name}_{vobab}.png', dpi=300, bbox_inches='tight')
+    plt.savefig(f'Result_Models/Tree/evaluation_{type}_{name}_{vobab}.png', dpi=300, bbox_inches='tight')
 
     plt.show()
 

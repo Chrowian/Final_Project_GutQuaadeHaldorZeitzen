@@ -63,22 +63,25 @@ def tokenize_dataframe(df: pd.DataFrame,
                        title_column: str = 'title', 
                        text_column: str = 'text',
                        vocab_size: int = 50000,
-                       max_length: int = 100) -> pd.DataFrame:
+                       max_length: int = 100,
+                       real_news: pd.DataFrame = None) -> pd.DataFrame:
     """
-    Tokenizes and pads the 'title' and 'text' columns of a DataFrame.
+    Tokenizes and pads the 'title' and 'text' columns of a DataFrame. If real_news DataFrame is provided,
+    it also tokenizes and pads its 'text' column.
 
     Parameters
     ----------
     df (pd.DataFrame): DataFrame containing the text to tokenize and pad.
     title_column (str): Name of the column containing titles. Default is 'title'.
     text_column (str): Name of the column containing texts. Default is 'text'.
-    vocab_size (int): Maximum number of words to keep based on word frequency. Default is 10000.
-    max_length (int): Maximum length for all sequences. If a sequence is shorter than the max length, 
-                      it will be padded, if it is longer, it will be truncated. Default is 100.
+    vocab_size (int): Maximum number of words to keep based on word frequency. Default is 50000.
+    max_length (int): Maximum length for all sequences. Default is 100.
+    real_news (pd.DataFrame): DataFrame containing the unseen text to tokenize and pad. Default is None.
 
     Returns
     ----------
-    pd.DataFrame: A DataFrame with the tokenized and padded 'title' and 'text' columns.
+    pd.DataFrame, pd.DataFrame: A DataFrame with the tokenized and padded 'title' and 'text' columns. 
+                                If real_news is not None, returns also the tokenized and padded real_news DataFrame.
     """
     # Initialize tokenizer
     tokenizer = Tokenizer(num_words=vocab_size, filters='')
@@ -106,7 +109,21 @@ def tokenize_dataframe(df: pd.DataFrame,
     word_index = tokenizer.word_index
     print('Found %s unique tokens.' % len(word_index))
 
+    if real_news is not None:
+        # Repeat the same steps for the real_news DataFrame, only for 'text' column
+        real_texts = real_news['text']
+
+        sequences_real_texts = tokenizer.texts_to_sequences(real_texts)
+
+        padded_real_texts = pad_sequences(sequences_real_texts, maxlen=max_length, padding='post')
+
+        real_news_tokenized = real_news.copy()
+        real_news_tokenized[text_column] = list(padded_real_texts)
+        
+        return df_tokenized, real_news_tokenized
+
     return df_tokenized
+
 
 
 def tokenize_transformer(df):

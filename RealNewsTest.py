@@ -37,9 +37,9 @@ print("Preprocessing data...")
 # Link to real article: https://www.bbc.com/news/world-us-canada-65875898
 
 # text from the article
-text = """ Mr Barr criticised his former boss and said he had no right to keep the files allegedly found at his home. Mr Trump will appear in court in Miami on Tuesday to face dozens of charges accusing him of illegally retaining classified information. He has repeatedly denied wrongdoing. Speaking to Fox News on Sunday, Mr Barr, who was Mr Trump's attorney general from February 2019 until December 2020, defended the 37-count indictment made public by Special Counsel Jack Smith on Friday. "I was shocked by the degree of sensitivity of these documents and how many there were... and I think the counts under the Espionage Act that he wilfully retained those documents are solid counts," he said. "If even half of it is true, then he's toast. It's a very detailed indictment and it's very damning," he added. The 73-year-old was once one of Mr Trump's staunchest allies, but has been increasingly critical of him since leaving office. Shortly after he gave the interview, Mr Trump described him as a "'disgruntled former employee" and "lazy attorney general who was weak [and] totally ineffective". Many prominent Republicans have been hesitant to criticise the former president, who is the frontrunner to be the party's presidential candidate in 2024, and have instead targeted the justice department and the broader investigation."""
+text = """Mr Barr criticised his former boss and said he had no right to keep the files allegedly found at his home. Mr Trump will appear in court in Miami on Tuesday to face dozens of charges accusing him of illegally retaining classified information. He has repeatedly denied wrongdoing. Speaking to Fox News on Sunday, Mr Barr, who was Mr Trump's attorney general from February 2019 until December 2020, defended the 37-count indictment made public by Special Counsel Jack Smith on Friday. "I was shocked by the degree of sensitivity of these documents and how many there were... and I think the counts under the Espionage Act that he wilfully retained those documents are solid counts," he said. "If even half of it is true, then he's toast. It's a very detailed indictment and it's very damning," he added. The 73-year-old was once one of Mr Trump's staunchest allies, but has been increasingly critical of him since leaving office. Shortly after he gave the interview, Mr Trump described him as a "'disgruntled former employee" and "lazy attorney general who was weak [and] totally ineffective". Many prominent Republicans have been hesitant to criticise the former president, who is the frontrunner to be the party's presidential candidate in 2024, and have instead targeted the justice department and the broader investigation."""
 
-text2 = """ THE HEAVENS—Stressing the act amounted to spitting directly on His holy edicts, the Lord our God, Divine Creator and Ruler of the Universe, announced Monday that He was still a little pissed off every time a human takes a bite from an apple. “Look, I know they probably don’t mean it, but I never told humanity they were allowed to start chowing down on the Forbidden Fruit after the Garden of Eden, and, frankly, it’s a little annoying that they’re still doing that,” said He Who Commanded Light to Shine out of Darkness, adding that He would often see red and feel the righteous urge to smite any human He witnessed casually cutting up a Golden Delicious or Granny Smith. “I’d never do anything rash, obviously. But it’s disrespectful. I’m really at my wit’s end here. It’s not like I can expel them from Paradise again. I guess I could issue a new commandment or flood the Earth again—but I just genuinely feel like they should have gotten the picture the first time. Meanwhile, they’re out picking apples every week and having a blast like it’s nothing. It’s so frustrating: apple pies, apple sauce, apple galettes. It all just raises my hackles. Sorry, but it’s true. I hate it. I hate it so much.” God added that maybe humanity and Satan could bond over their love of apples when theyre all burning in Hell. """
+text2 = """NEW YORK—Paying out of pocket to print his reaction to a highly publicized court case in four area newspapers, former President Donald Trump took out full-page ads Tuesday calling for New York to reinstate capital punishment and sentence him to death following his historic indictment. “This person must serve as an example so that others will think long and hard before committing a crime,” read the ad in which Trump, without directly naming himself as the defendant who should be executed by lethal injection, urged readers of The New York Times, the Daily News, the New York Post, and Newsday to show him no mercy. “I am not looking to psychoanalyze or understand this person. I am looking to punish him. Let our politicians give back law enforcement’s power to keep us safe. We must cease our continuous pandering to the criminal population of this city. Send a message loud and clear to those who would terrorize New York—BRING BACK THE DEATH PENALTY!” Trump went on to call himself a “depraved animal who needs to be put down immediately.”"""
 # Create a dictionary
 data_real = {'text': [text, text2]}
 
@@ -129,8 +129,7 @@ plt.show()
 model_best = load_model(f'Result_Models/RNN_MODELS/test_real.h5')
 
 loss, accuracy, y_pre, y_pred, roc_auc = cf.evaluate_model(model_best, X_test, y_test, plot = False)
-#%%
-y_pred = model_best.predict(X_test)
+
 # %%
 # Extract 'text' column from the dataframe and convert it to a numpy array
 real_tokenised_array = np.stack(real_tokenised['text'])
@@ -138,5 +137,7 @@ real_tokenised_array = np.stack(real_tokenised['text'])
 # Use the numpy array for prediction
 y_pred_real = model_best.predict(real_tokenised_array)
 # %%
-print(np.round(y_pred_real),'\n',y_pred_real)
+print('Classification of the Articles: 0: Real, 1: Fake\n')
+print(f'Article 1 (BBC):       {np.round(y_pred_real[0])} ({y_pred_real[0]})')
+print(f'Article 2 (The Onion): {np.round(y_pred_real[1])} ({y_pred_real[1]})')
 # %%
